@@ -7,26 +7,25 @@ module Serverspec
 
     class AutoScalingGroup < Base
 
-      def initialize(group_name_tag_value)
-        @group_name = group_name_tag_value
+      def initialize(name)
+        @name = name
       end
 
       def content
-        found_group_name = nil
 
-        AWS::AutoScaling.new.groups.each do |group|
-          group.tags.each do |tag|
-            if tag[:key] == 'Name' and tag[:value] == @group_name
-              found_group_name = group.name
-            end
-          end
-        end
+        #AWS::AutoScaling.new.groups.each do |group|
+          #group.tags.each do |tag|
+          #  if tag[:key] == 'Name' and tag[:value] == @group_name
+          #    found_group_name = group.name
+          #  end
+          #end
+        #end
 
-        if found_group_name == nil
-          raise "no match found for #{@group_name}"
-        else
-          AWS::AutoScaling.new.groups[found_group_name]
-        end
+        #if found_group_name == nil
+        #  raise "no match found for #{@group_name}"
+        #else
+        AWS::AutoScaling.new.groups[@name]
+        #end
       end
 
       def has_default_cooldown?(default_cooldown)
@@ -59,6 +58,12 @@ module Serverspec
 
       def has_availability_zone_names?(availability_zone_names)
         Set.new(content.availability_zone_names.to_a) == Set.new(availability_zone_names)
+      end
+
+      def has_subnets?(subnet_ids)
+        s1 = Set.new
+        content.subnets.each { |x| s1.add(x.subnet_id) }
+        s1 == Set.new(subnet_ids)
       end
 
       def has_load_balancers?(load_balancer_names)

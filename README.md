@@ -139,6 +139,11 @@ but here is a quick summary of what is currently implemented.
 * have_ingress_rules?(expected_ingress_rules)
 * have_egress_rules?(expected_egress_rules)
 
+Ingress rule example
+```ruby
+it { is_expected.to have_ingress_rules([ { :port => '22..22', :protocol => :tcp, :ip_ranges => ['0.0.0.0/0'] } ]) }
+```
+
 ## Known Room for Improvment
 
 The vpc resource doesn't support any predicates for peering, and it doesn't support predicates for testing network acl beyond

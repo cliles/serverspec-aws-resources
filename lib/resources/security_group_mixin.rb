@@ -44,13 +44,13 @@ module Serverspec
             if perm.groups == []
               actual_rules << {:port_range=>perm.port_range.to_s, :protocol=>perm.protocol.to_s, :ip_ranges=>Set.new(perm.ip_ranges)}
             else
-              actual_rules << {:port_range=>perm.port_range.to_s, :protocol=>perm.protocol.to_S, :groups=>Set.new(perm.groups.map { |group| group.id })}
+              actual_rules << {:port_range=>perm.port_range.to_s, :protocol=>perm.protocol.to_s, :groups=>Set.new(perm.groups.map { |group| group.id })}
             end
           end
         end
 
         expected_rules_to_compare = expected_rules.map do |rule|
-          if rule[:groups]
+          if rule.include? :groups
             {:port_range=>rule[:port_range].to_s, :protocol=>rule[:protocol].to_s, :groups=>Set.new(rule[:groups]) }
           else
             {:port_range=>rule[:port_range].to_s, :protocol=>rule[:protocol].to_s, :ip_ranges=>Set.new(rule[:ip_ranges]) }
@@ -58,7 +58,7 @@ module Serverspec
         end
 
 
-        actual_rules.should == Set.new(expected_rules_to_compare)
+        actual_rules.eql? Set.new(expected_rules_to_compare)
       end
     end
   end

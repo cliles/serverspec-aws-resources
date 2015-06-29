@@ -21,6 +21,10 @@ module Serverspec
         content.launch_time
       end
 
+      def running?
+        content.status == :running
+      end
+
       def is_ebs_optimized?
         content.ebs_optimized
       end
@@ -77,6 +81,10 @@ module Serverspec
         content.monitoring == :pending
       end
 
+      def is_ebs_root?
+        content.root_device_type == :ebs
+      end
+
       # def method_missing(sym, *args, &block)
       #   @ec2_instance.send sym, *args, &block
       # end
@@ -113,6 +121,10 @@ module Serverspec
         content.key_name == key_name
       end
 
+      def has_subnet?(subnet)
+        content.subnet_id == subnet
+      end
+
       def has_image_id?(image_id)
         content.image_id == image_id
       end
@@ -139,6 +151,10 @@ module Serverspec
 
       def has_kernel_id?(kernel_id)
         content.kernel_id == kernel_id
+      end
+
+      def has_sg(sg)
+        content.security_groups.include? sg
       end
 
       def to_s
